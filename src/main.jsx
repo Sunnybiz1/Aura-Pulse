@@ -1,0 +1,19 @@
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext.jsx';
+import { SubscriptionProvider } from './context/SubscriptionContext.jsx';
+import './index.css';
+import App from './App.jsx';
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <BrowserRouter>
+      <AuthProvider>
+        <SubscriptionProvider>
+          <App />
+        </SubscriptionProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  </StrictMode>
+);
