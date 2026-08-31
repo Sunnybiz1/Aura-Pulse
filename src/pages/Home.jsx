@@ -14,17 +14,37 @@ export default function Home() {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Weekly Goal Days state (Screenshot 1 middle panel)
-  const weekDays = [
-    { day: 'Mon', date: 12, completed: true },
-    { day: 'Tue', date: 12, completed: true },
-    { day: 'Wed', date: 12, completed: true },
-    { day: 'Thu', date: 12, active: true },
-    { day: 'Fri', date: 13, completed: false },
-    { day: 'Sat', date: 14, completed: false },
-    { day: 'Sun', date: 15, completed: false }
-  ];
+  // Dynamic 7-day Weekly Goal calendar calculation based on real-world date
+  const getDynamicWeekDays = () => {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
 
+    // Calculate Monday of the current week (Sunday is 7th day of week)
+    const distToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + distToMonday);
+
+    const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+
+    return dayLabels.map((dayLabel, idx) => {
+      const current = new Date(monday);
+      current.setDate(monday.getDate() + idx);
+      const currentMidnight = new Date(current.getFullYear(), current.getMonth(), current.getDate()).getTime();
+
+      const isToday = currentMidnight === todayMidnight;
+      const isPast = currentMidnight < todayMidnight;
+
+      return {
+        day: dayLabel,
+        date: current.getDate(),
+        isToday: isToday,
+        completed: isPast || isToday
+      };
+    });
+  };
+
+  const weekDays = getDynamicWeekDays();
   const completedCount = weekDays.filter(w => w.completed).length;
 
   // Active Dynamic Challenge based on Home vs Gym choice
@@ -59,7 +79,7 @@ export default function Home() {
             border: '2px solid var(--accent-lime)'
           }}>
             <img 
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" 
+              src={currentUser?.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"} 
               alt="User Avatar"
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
@@ -121,7 +141,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Weekly Goal Tracker Strip (Screenshot 1 Middle) */}
+      {/* Weekly Goal Tracker Strip (Screenshot 1 Middle - Fully Dynamic) */}
       <div className="card" style={{ padding: '16px', marginBottom: '0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <span style={{ fontSize: '0.88rem', fontWeight: 800 }}>Weekly Goal</span>
@@ -137,14 +157,27 @@ export default function Home() {
               style={{
                 padding: '10px 4px',
                 borderRadius: 'var(--radius-md)',
-                background: item.active ? '#ffffff' : item.completed ? 'rgba(198, 255, 0, 0.15)' : 'var(--bg-main)',
-                color: item.active ? '#000000' : item.completed ? 'var(--accent-lime)' : 'var(--text-muted)',
-                fontWeight: item.active || item.completed ? 900 : 600,
-                border: item.active ? '2px solid #ffffff' : '1px solid var(--border-subtle)',
+                background: item.isToday 
+                  ? '#ffffff' 
+                  : item.completed 
+                    ? 'rgba(198, 255, 0, 0.15)' 
+                    : 'var(--bg-main)',
+                color: item.isToday 
+                  ? '#000000' 
+                  : item.completed 
+                    ? 'var(--accent-lime)' 
+                    : 'var(--text-muted)',
+                fontWeight: item.isToday || item.completed ? 900 : 600,
+                border: item.isToday 
+                  ? '2px solid #ffffff' 
+                  : item.completed 
+                    ? '1px solid rgba(198, 255, 0, 0.3)' 
+                    : '1px solid var(--border-subtle)',
+                boxShadow: item.isToday ? '0 4px 12px rgba(255, 255, 255, 0.2)' : 'none',
                 transition: 'all 0.2s ease'
               }}
             >
-              <div style={{ fontSize: '0.68rem', marginBottom: '2px' }}>{item.day}</div>
+              <div style={{ fontSize: '0.68rem', marginBottom: '2px', opacity: item.isToday ? 0.9 : 0.8 }}>{item.day}</div>
               <div style={{ fontSize: '0.95rem' }}>{item.date}</div>
             </div>
           ))}
