@@ -384,16 +384,16 @@ export default function Nutrition() {
             {isGeneratingAI ? 'Gemini AI Customizing Diet Plan...' : 'Generate AI Custom Diet Plan'}
           </button>
 
-          {/* Meal Category Filter Pills (African & Fitness Categories) */}
+          {/* Meal Category Filter Pills (Clean 2-Row Wrapped Layout) */}
           <div style={{ marginBottom: '16px' }}>
-            <div style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', marginBottom: '8px' }}>
-              CATEGORIES & AFRICAN SPECIALS
+            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-secondary)', marginBottom: '8px', letterSpacing: '0.5px' }}>
+              FILTER BY CATEGORY
             </div>
-            <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '6px', scrollbarWidth: 'none' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {[
-                { label: 'All Meals', value: 'All' },
-                { label: '🇳🇬 Nigerian Specials', value: 'Nigerian Specials' },
-                { label: '🔥 High-Protein', value: 'High-Protein' },
+                { label: '✨ All Meals', value: 'All' },
+                { label: '🇳🇬 Nigerian', value: 'Nigerian Specials' },
+                { label: '💪 High-Protein', value: 'High-Protein' },
                 { label: '🌾 Complex Carbs', value: 'Complex Carbs' },
                 { label: '🥗 Low-Carb Soups', value: 'Low-Carb Soups' },
                 { label: '🍳 Breakfast & Snacks', value: 'Breakfast & Snacks' }
@@ -404,17 +404,16 @@ export default function Nutrition() {
                     key={cat.value}
                     onClick={() => setActiveCategory(cat.value)}
                     style={{
-                      whiteSpace: 'nowrap',
-                      padding: '8px 14px',
+                      padding: '7px 13px',
                       borderRadius: 'var(--radius-full)',
                       background: isActive ? 'var(--accent-lime)' : 'var(--bg-card)',
                       color: isActive ? '#000000' : 'var(--text-primary)',
-                      fontWeight: 800,
-                      fontSize: '0.78rem',
+                      fontWeight: isActive ? 900 : 700,
+                      fontSize: '0.76rem',
                       border: isActive ? '1px solid var(--accent-lime)' : '1px solid var(--border-subtle)',
                       cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      boxShadow: isActive ? 'var(--shadow-lime)' : 'none'
+                      transition: 'all 0.15s ease-in-out',
+                      boxShadow: isActive ? '0 2px 10px rgba(198, 255, 0, 0.25)' : 'none'
                     }}
                   >
                     {cat.label}
