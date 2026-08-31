@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Utensils, Flame, Sparkles, ShoppingBag, Check, Plus, RefreshCw, ChevronRight, Apple } from 'lucide-react';
+import { Utensils, Flame, Sparkles, ShoppingBag, Check, Plus, RefreshCw, ChevronRight, Apple, Globe } from 'lucide-react';
 import { supabase } from '../supabase';
 import { generateAIDietPlan } from '../services/geminiService';
+import { africanMealsDataset } from '../data/africanMeals';
 
 export default function Nutrition() {
   const { currentUser, updateProfileData } = useAuth();
@@ -13,6 +14,7 @@ export default function Nutrition() {
   const userId = currentUser?.uid || 'demo_user';
 
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('All');
 
   // Calculate dynamic target TDEE calories
   const targetCalories = Math.round(weight * 26 + 300);
@@ -82,41 +84,38 @@ export default function Nutrition() {
     }
   };
 
-  // Daily Meal Plans
+  // Daily Meal Plans (Integrated African/Nigerian Specials & Standard Fitness Dishes)
   const [meals, setMeals] = useState([
+    ...africanMealsDataset.map((item, idx) => ({
+      ...item,
+      time: item.type === 'Breakfast' ? '08:30 AM' : item.type === 'Lunch' ? '01:15 PM' : item.type === 'Dinner' ? '07:30 PM' : '04:00 PM',
+      logged: idx === 0 || idx === 4 // Mark Suya & Jollof logged by default for demo
+    })),
     {
-      id: 1,
+      id: 'std_1',
       name: 'Oatmeal with Pumpkin & Chia Seeds',
+      category: 'Breakfast & Snacks',
       type: 'Breakfast',
       time: '08:30 AM',
       kcal: 380,
       protein: 24,
       carbs: 52,
       fat: 10,
+      tag: 'Fitness Breakfast',
       image: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=400&q=80',
-      logged: true
+      logged: false
     },
     {
-      id: 2,
-      name: 'Seafood Paella with Creamy Sauce',
-      type: 'Lunch',
-      time: '01:15 PM',
-      kcal: 520,
-      protein: 42,
-      carbs: 65,
-      fat: 14,
-      image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=400&q=80',
-      logged: true
-    },
-    {
-      id: 3,
+      id: 'std_2',
       name: 'Grilled Salmon & Quinoa Bowl',
+      category: 'High-Protein',
       type: 'Dinner',
       time: '07:30 PM',
       kcal: 480,
       protein: 38,
       carbs: 40,
       fat: 18,
+      tag: 'High-Protein',
       image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400&q=80',
       logged: false
     }
@@ -385,67 +384,122 @@ export default function Nutrition() {
             {isGeneratingAI ? 'Gemini AI Customizing Diet Plan...' : 'Generate AI Custom Diet Plan'}
           </button>
 
+          {/* Meal Category Filter Pills (African & Fitness Categories) */}
+          <div style={{ marginBottom: '16px' }}>
+            <div style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', marginBottom: '8px' }}>
+              CATEGORIES & AFRICAN SPECIALS
+            </div>
+            <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '6px', scrollbarWidth: 'none' }}>
+              {[
+                { label: 'All Meals', value: 'All' },
+                { label: '🇳🇬 Nigerian Specials', value: 'Nigerian Specials' },
+                { label: '🔥 High-Protein', value: 'High-Protein' },
+                { label: '🌾 Complex Carbs', value: 'Complex Carbs' },
+                { label: '🥗 Low-Carb Soups', value: 'Low-Carb Soups' },
+                { label: '🍳 Breakfast & Snacks', value: 'Breakfast & Snacks' }
+              ].map(cat => {
+                const isActive = activeCategory === cat.value;
+                return (
+                  <button
+                    key={cat.value}
+                    onClick={() => setActiveCategory(cat.value)}
+                    style={{
+                      whiteSpace: 'nowrap',
+                      padding: '8px 14px',
+                      borderRadius: 'var(--radius-full)',
+                      background: isActive ? 'var(--accent-lime)' : 'var(--bg-card)',
+                      color: isActive ? '#000000' : 'var(--text-primary)',
+                      fontWeight: 800,
+                      fontSize: '0.78rem',
+                      border: isActive ? '1px solid var(--accent-lime)' : '1px solid var(--border-subtle)',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: isActive ? 'var(--shadow-lime)' : 'none'
+                    }}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Daily Meal Plan Cards (Matching Screenshot 2 & 3) */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 900 }}>Daily Recommended Meal</h3>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Tap to log</span>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 900 }}>
+                {activeCategory === 'All' ? 'All Recommended Meals' : `${activeCategory}`}
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Tap button to log</span>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {meals.map(meal => (
-                <div
-                  key={meal.id}
-                  className="card"
-                  style={{
-                    padding: '14px',
-                    display: 'flex',
-                    gap: '14px',
-                    alignItems: 'center',
-                    marginBottom: '0',
-                    border: meal.logged ? '1px solid var(--accent-lime)' : '1px solid var(--border-subtle)',
-                    background: meal.logged ? 'rgba(198, 255, 0, 0.04)' : 'var(--bg-card)'
-                  }}
-                >
-                  <img 
-                    src={meal.image} 
-                    alt={meal.name}
-                    style={{ width: '70px', height: '70px', borderRadius: 'var(--radius-md)', objectFit: 'cover' }}
-                  />
-
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-                      <span style={{ fontSize: '0.68rem', fontWeight: 800, color: 'var(--accent-lime)', textTransform: 'uppercase' }}>
-                        {meal.type} • {meal.time}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>
-                      {meal.name}
-                    </div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                      🔥 {meal.kcal} kcal • 💪 {meal.protein}g Protein
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => toggleMealLog(meal.id)}
+              {meals
+                .filter(meal => {
+                  if (activeCategory === 'All') return true;
+                  if (activeCategory === 'Nigerian Specials') return meal.id.toString().startsWith('ng_');
+                  return meal.category === activeCategory;
+                })
+                .map(meal => (
+                  <div
+                    key={meal.id}
+                    className="card"
                     style={{
-                      width: '38px',
-                      height: '38px',
-                      borderRadius: '50%',
-                      background: meal.logged ? 'var(--accent-lime)' : 'var(--bg-main)',
-                      border: `1px solid ${meal.logged ? 'var(--accent-lime)' : 'var(--border-subtle)'}`,
-                      color: meal.logged ? '#000' : 'var(--text-muted)',
+                      padding: '14px',
                       display: 'flex',
+                      gap: '14px',
                       alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer'
+                      marginBottom: '0',
+                      border: meal.logged ? '1px solid var(--accent-lime)' : '1px solid var(--border-subtle)',
+                      background: meal.logged ? 'rgba(198, 255, 0, 0.04)' : 'var(--bg-card)'
                     }}
                   >
-                    {meal.logged ? <Check size={18} /> : <Plus size={18} />}
-                  </button>
-                </div>
-              ))}
+                    <img 
+                      src={meal.image} 
+                      alt={meal.name}
+                      style={{ width: '74px', height: '74px', borderRadius: 'var(--radius-md)', objectFit: 'cover' }}
+                    />
+
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '0.68rem', fontWeight: 800, color: 'var(--accent-lime)', textTransform: 'uppercase' }}>
+                          {meal.tag || `${meal.type} • ${meal.time}`}
+                        </span>
+                        {meal.prepTime && (
+                          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                            • ⏱️ {meal.prepTime}
+                          </span>
+                        )}
+                      </div>
+
+                      <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px', lineHeight: 1.2 }}>
+                        {meal.name}
+                      </div>
+
+                      <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        <span>🔥 <b>{meal.kcal}</b> kcal</span>
+                        <span>💪 <b>{meal.protein}g</b> P</span>
+                        <span>🌾 <b>{meal.carbs}g</b> C</span>
+                        <span>🥑 <b>{meal.fat}g</b> F</span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => toggleMealLog(meal.id)}
+                      className={meal.logged ? 'btn-primary' : 'btn-secondary'}
+                      style={{
+                        padding: '8px 12px',
+                        fontSize: '0.74rem',
+                        width: 'auto',
+                        minWidth: '70px',
+                        borderRadius: 'var(--radius-full)'
+                      }}
+                    >
+                      {meal.logged ? <Check size={14} /> : <Plus size={14} />}
+                      {meal.logged ? 'Logged' : 'Log'}
+                    </button>
+                  </div>
+                ))}
             </div>
           </div>
         </>
