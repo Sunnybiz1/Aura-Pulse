@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Search, Dumbbell, Home as HomeIcon, Zap, Play, Calendar, CheckCircle, ArrowRight, Flame, Clock } from 'lucide-react';
+import { Sparkles, Dumbbell, Home as HomeIcon, Zap, Play, Calendar, CheckCircle, ArrowRight, Flame, Clock } from 'lucide-react';
 
 export default function Home() {
   const { currentUser, updateProfileData } = useAuth();
@@ -11,8 +11,6 @@ export default function Home() {
   const environment = currentUser?.environment || 'Gym'; // Gym, Home, Hybrid
   const goal = currentUser?.goal || 'Tone & Strength';
   const experience = currentUser?.experience || 'Beginner';
-
-  const [searchQuery, setSearchQuery] = useState('');
 
   // Dynamic 7-day Weekly Goal calendar calculation based on real-world date
   const getDynamicWeekDays = () => {
@@ -100,44 +98,6 @@ export default function Home() {
             {environment === 'Home' ? <HomeIcon size={14} /> : <Dumbbell size={14} />}
             <span>{environment} Mode</span>
           </button>
-        </div>
-      </div>
-
-      {/* Search Input Bar (Screenshot 1 Middle) */}
-      <div style={{
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        background: 'var(--bg-card)',
-        borderRadius: 'var(--radius-full)',
-        padding: '12px 18px',
-        border: '1px solid var(--border-subtle)'
-      }}>
-        <Search size={18} color="var(--text-muted)" style={{ marginRight: '10px' }} />
-        <input 
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search workouts, plans, meals..."
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--text-primary)',
-            fontSize: '0.9rem',
-            outline: 'none',
-            width: '100%'
-          }}
-        />
-        <div style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '50%',
-          background: 'var(--accent-lime)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          <Zap size={16} color="#000" />
         </div>
       </div>
 
