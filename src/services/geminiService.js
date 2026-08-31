@@ -107,18 +107,19 @@ export const generateAIDietPlan = async (userProfile) => {
   const allergies = userProfile?.allergies?.join(', ') || 'None';
   const targetKcal = Math.round(weight * 26 + 300);
 
-  const prompt = `Act as an expert sports nutritionist. Generate a personalized daily meal plan for:
+  const prompt = `Act as an expert sports nutritionist specializing in global and African/Nigerian fitness cuisine. Generate a personalized daily meal plan for:
 Name: ${name}, Weight: ${weight}kg, Height: ${height}cm, Goal: ${goal}, Food Allergies: ${allergies}.
 Target Calorie Intake: ~${targetKcal} kcal.
+Include nutritious African & Nigerian options (e.g. Suya, Brown Rice Jollof, Efo Riro, Moi Moi, Grilled Tilapia, Ofada Rice, Boli with Fish) alongside international options.
 Return ONLY a valid JSON object matching this structure:
 {
   "targetCalories": ${targetKcal},
   "macroSplit": { "carbs": 240, "protein": 140, "fat": 60 },
   "meals": [
-    { "type": "Breakfast", "name": "Meal Name", "kcal": 400, "protein": 30, "carbs": 50, "fat": 10 },
-    { "type": "Lunch", "name": "Meal Name", "kcal": 520, "protein": 42, "carbs": 58, "fat": 12 },
-    { "type": "Dinner", "name": "Meal Name", "kcal": 480, "protein": 38, "carbs": 36, "fat": 18 },
-    { "type": "Snack", "name": "Meal Name", "kcal": 220, "protein": 20, "carbs": 18, "fat": 7 }
+    { "type": "Breakfast", "name": "Steamed Moi Moi with Eggs & Mackerel", "kcal": 380, "protein": 28, "carbs": 32, "fat": 10 },
+    { "type": "Lunch", "name": "Brown Rice Jollof with Grilled Turkey Breast", "kcal": 510, "protein": 42, "carbs": 62, "fat": 13 },
+    { "type": "Dinner", "name": "Efo Riro with Lean Beef & Ugwu Greens", "kcal": 420, "protein": 40, "carbs": 18, "fat": 14 },
+    { "type": "Snack", "name": "Grilled Beef Suya with Cucumber Slices", "kcal": 280, "protein": 34, "carbs": 10, "fat": 11 }
   ]
 }
 Exclude all listed allergies: ${allergies}.`;
@@ -137,10 +138,10 @@ Exclude all listed allergies: ${allergies}.`;
     targetCalories: targetKcal,
     macroSplit: { carbs: 240, protein: Math.round(weight * 2), fat: 65 },
     meals: [
-      { type: 'Breakfast', name: 'High-Protein Oats with Chia, Banana & Berries', kcal: 380, protein: 26, carbs: 50, fat: 9 },
-      { type: 'Lunch', name: 'Grilled Chicken & Quinoa Energy Bowl', kcal: 520, protein: 44, carbs: 58, fat: 12 },
-      { type: 'Dinner', name: 'Pan-Seared Salmon with Asparagus & Sweet Potato', kcal: 480, protein: 38, carbs: 36, fat: 18 },
-      { type: 'Snack', name: 'Greek Yogurt with Raw Almonds & Honey', kcal: 220, protein: 20, carbs: 18, fat: 7 }
+      { type: 'Breakfast', name: 'Steamed Protein Moi Moi with Egg & Mackerel', kcal: 380, protein: 28, carbs: 32, fat: 10 },
+      { type: 'Lunch', name: 'Brown Rice Jollof with Grilled Turkey Breast', kcal: 510, protein: 42, carbs: 62, fat: 13 },
+      { type: 'Dinner', name: 'Efo Riro with Lean Beef & Ugwu Greens', kcal: 420, protein: 40, carbs: 18, fat: 14 },
+      { type: 'Snack', name: 'Grilled Beef Suya with Cucumber Slices', kcal: 280, protein: 34, carbs: 10, fat: 11 }
     ]
   };
 };
