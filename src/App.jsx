@@ -5,7 +5,7 @@ import { useAuth } from './context/AuthContext';
 import Home from './pages/Home';
 import Programs from './pages/Programs';
 import AICoach from './pages/AICoach';
-import Nutrition from './pages/Nutrition';
+import VideoExercises from './pages/VideoExercises';
 import Profile from './pages/Profile';
 import Auth from './pages/Auth';
 import BottomNav from './components/BottomNav';
@@ -80,7 +80,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/programs" element={<Programs />} />
           <Route path="/ai-coach" element={<AICoach />} />
-          <Route path="/nutrition" element={<Nutrition />} />
+          <Route path="/exercises" element={<VideoExercises />} />
+          <Route path="/nutrition" element={<VideoExercises />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </main>
