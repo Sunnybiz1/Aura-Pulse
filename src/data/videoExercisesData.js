@@ -158,5 +158,45 @@ export const videoExercisesData = [
       'Repeat push-up and tap left hand to right shoulder.'
     ],
     tips: 'Keep hips square and avoid twisting hips when tapping opposite shoulders.'
+  },
+  {
+    id: 'ex_9',
+    title: 'Incline Dumbbell Bicep Curls',
+    category: 'Arms',
+    difficulty: 'Intermediate',
+    targetMuscle: 'Biceps Brachii (Long Head Peak)',
+    equipment: 'Dumbbells & Incline Bench',
+    duration: '4 Sets × 12 Reps',
+    rest: '60s Rest',
+    thumbnail: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=600&q=80',
+    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    description: 'Maximize bicep stretch and peak contraction by curling from an inclined seated position.',
+    instructions: [
+      'Sit on an incline bench set to 45 degrees with a dumbbell in each hand hanging straight down.',
+      'Keep upper arms stationary and curl dumbbells up while supinating palms (turning palms up).',
+      'Squeeze biceps hard at peak contraction for 1 full second.',
+      'Lower dumbbells slowly for a full deep bicep stretch.'
+    ],
+    tips: 'Keep elbows locked back to maintain maximum tension on the long head of the bicep throughout the movement.'
+  },
+  {
+    id: 'ex_10',
+    title: 'Tricep Rope Cable Pushdowns',
+    category: 'Arms',
+    difficulty: 'Beginner',
+    targetMuscle: 'Triceps Lateral & Medial Head',
+    equipment: 'Cable Machine & Rope Attachment',
+    duration: '4 Sets × 15 Reps',
+    rest: '45s Rest',
+    thumbnail: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80',
+    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    description: 'Isolate horseshoe tricep lockout strength with smooth cable tension.',
+    instructions: [
+      'Attach a rope to high cable pulley and grip with palms facing each other.',
+      'Pin upper arms to your sides and push rope straight down by extending elbows.',
+      'Spread rope ends outward at the bottom of the movement for peak tricep contraction.',
+      'Slowly allow forearms to rise back up to 90 degrees under control.'
+    ],
+    tips: 'Do not let your shoulders flare or swing forward—keep elbows pinned tight to your torso.'
   }
 ];
