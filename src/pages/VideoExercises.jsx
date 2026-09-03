@@ -6,17 +6,17 @@ export default function VideoExercises() {
   const [selectedVenue, setSelectedVenue] = useState('Gym'); // 'Home' or 'Gym'
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Chest');
-  const [selectedDifficulty, setSelectedDifficulty] = useState('All');
+  const [selectedDifficulty, setSelectedDifficulty] = useState('Beginner');
   const [activeModalExercise, setActiveModalExercise] = useState(null);
 
   const categories = ['Chest', 'Back', 'Arms', 'Legs', 'Abs', 'Cardio', 'Full Body'];
-  const difficulties = ['All', 'Beginner', 'Intermediate', 'Advanced'];
+  const difficulties = ['Beginner', 'Intermediate', 'Advanced'];
 
   // Filter exercises based on Venue (Home vs Gym), Category, Difficulty, and Search
   const categoryExercises = videoExercisesData.filter(item => {
     const matchesVenue = item.venue === selectedVenue || item.venue === 'Both';
     const matchesCategory = item.category === selectedCategory;
-    const matchesDifficulty = selectedDifficulty === 'All' || item.difficulty === selectedDifficulty;
+    const matchesDifficulty = item.difficulty === selectedDifficulty;
     const matchesSearch = searchQuery === '' || 
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.targetMuscle.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -196,7 +196,7 @@ export default function VideoExercises() {
         <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '2px' }}>
           {difficulties.map(diff => {
             const isActive = selectedDifficulty === diff;
-            const badgeColor = diff === 'Beginner' ? '#22c55e' : diff === 'Intermediate' ? '#eab308' : diff === 'Advanced' ? '#ef4444' : 'var(--accent-lime)';
+            const badgeColor = diff === 'Beginner' ? '#22c55e' : diff === 'Intermediate' ? '#eab308' : '#ef4444';
             return (
               <button
                 key={diff}
@@ -206,7 +206,7 @@ export default function VideoExercises() {
                   padding: '6px 12px',
                   borderRadius: 'var(--radius-full)',
                   background: isActive ? badgeColor : 'var(--bg-main)',
-                  color: isActive ? (diff === 'Intermediate' || diff === 'All' ? '#000' : '#fff') : 'var(--text-primary)',
+                  color: isActive ? (diff === 'Intermediate' ? '#000' : '#fff') : 'var(--text-primary)',
                   fontWeight: 800,
                   fontSize: '0.75rem',
                   border: isActive ? `1px solid ${badgeColor}` : '1px solid var(--border-subtle)',
@@ -217,7 +217,7 @@ export default function VideoExercises() {
                 {diff === 'Beginner' && '🟢 '}
                 {diff === 'Intermediate' && '🟡 '}
                 {diff === 'Advanced' && '🔴 '}
-                {diff === 'All' ? 'All Levels' : `${diff}`}
+                {diff}
               </button>
             );
           })}
@@ -227,7 +227,7 @@ export default function VideoExercises() {
       {/* 3. Sectional Grouping by Difficulty Level */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         {difficultySections
-          .filter(sec => selectedDifficulty === 'All' || selectedDifficulty === sec.level)
+          .filter(sec => selectedDifficulty === sec.level)
           .map(sec => {
             const sectionExercises = categoryExercises.filter(ex => ex.difficulty === sec.level);
             if (sectionExercises.length === 0) return null;
