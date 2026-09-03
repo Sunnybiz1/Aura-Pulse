@@ -4,14 +4,14 @@ import { videoExercisesData } from '../data/videoExercisesData';
 
 export default function VideoExercises() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('Chest');
   const [activeModalExercise, setActiveModalExercise] = useState(null);
 
-  const categories = ['All', 'Chest', 'Back', 'Arms', 'Legs', 'Abs', 'Cardio', 'Full Body'];
+  const categories = ['Chest', 'Back', 'Arms', 'Legs', 'Abs', 'Cardio', 'Full Body'];
 
   // Filter exercises based on search query and selected category
   const filteredExercises = videoExercisesData.filter(item => {
-    const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
+    const matchesCategory = item.category === selectedCategory;
     const matchesSearch = searchQuery === '' || 
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.targetMuscle.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -117,7 +117,7 @@ export default function VideoExercises() {
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <h3 style={{ fontSize: '1.05rem', fontWeight: 900 }}>
-            {selectedCategory === 'All' ? 'All Guided Exercises' : `${selectedCategory} Exercises`}
+            {selectedCategory} Exercises
           </h3>
           <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
             Showing {filteredExercises.length} results
