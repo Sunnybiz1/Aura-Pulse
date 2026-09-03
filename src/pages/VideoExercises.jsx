@@ -7,7 +7,7 @@ export default function VideoExercises() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activeModalExercise, setActiveModalExercise] = useState(null);
 
-  const categories = ['All', 'Chest', 'Back', 'Legs', 'Abs', 'Cardio', 'Full Body'];
+  const categories = ['All', 'Chest', 'Back', 'Arms', 'Legs', 'Abs', 'Cardio', 'Full Body'];
 
   // Filter exercises based on search query and selected category
   const filteredExercises = videoExercisesData.filter(item => {
