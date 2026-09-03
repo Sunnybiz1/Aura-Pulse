@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Search, Play, X, Dumbbell, Zap, Flame, Clock, CheckCircle2, ChevronRight, Sparkles, Layers } from 'lucide-react';
+import { Search, Play, X, Dumbbell, Zap, Flame, Clock, CheckCircle2, ChevronRight, Sparkles, Home as HomeIcon } from 'lucide-react';
 import { videoExercisesData } from '../data/videoExercisesData';
 
 export default function VideoExercises() {
+  const [selectedVenue, setSelectedVenue] = useState('Gym'); // 'Home' or 'Gym'
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Chest');
   const [selectedDifficulty, setSelectedDifficulty] = useState('All');
@@ -11,8 +12,9 @@ export default function VideoExercises() {
   const categories = ['Chest', 'Back', 'Arms', 'Legs', 'Abs', 'Cardio', 'Full Body'];
   const difficulties = ['All', 'Beginner', 'Intermediate', 'Advanced'];
 
-  // Filter exercises based on category, difficulty, and search query
+  // Filter exercises based on Venue (Home vs Gym), Category, Difficulty, and Search
   const categoryExercises = videoExercisesData.filter(item => {
+    const matchesVenue = item.venue === selectedVenue || item.venue === 'Both';
     const matchesCategory = item.category === selectedCategory;
     const matchesDifficulty = selectedDifficulty === 'All' || item.difficulty === selectedDifficulty;
     const matchesSearch = searchQuery === '' || 
@@ -20,7 +22,7 @@ export default function VideoExercises() {
       item.targetMuscle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.equipment.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesCategory && matchesDifficulty && matchesSearch;
+    return matchesVenue && matchesCategory && matchesDifficulty && matchesSearch;
   });
 
   // Group exercises into sections by difficulty level
@@ -36,7 +38,7 @@ export default function VideoExercises() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-lime)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Interactive Form Guide
+            Interactive Demo Guide
           </div>
           <h2 style={{ fontSize: '1.4rem', fontWeight: 900, lineHeight: 1.1 }}>
             Video Exercise Library
@@ -56,6 +58,64 @@ export default function VideoExercises() {
         </div>
       </div>
 
+      {/* 🌟 Segmented Home vs Gym Venue Toggle Bar (Matching User Screenshot 100%) */}
+      <div style={{
+        background: '#0d1117',
+        borderRadius: 'var(--radius-full)',
+        padding: '5px',
+        border: '1px solid var(--border-subtle)',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '4px',
+        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)'
+      }}>
+        <button
+          onClick={() => setSelectedVenue('Home')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            padding: '12px 16px',
+            borderRadius: 'var(--radius-full)',
+            background: selectedVenue === 'Home' ? 'var(--accent-lime)' : 'transparent',
+            color: selectedVenue === 'Home' ? '#000000' : 'var(--text-primary)',
+            fontWeight: selectedVenue === 'Home' ? 900 : 700,
+            fontSize: '0.92rem',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: selectedVenue === 'Home' ? '0 4px 14px rgba(198, 255, 0, 0.35)' : 'none'
+          }}
+        >
+          <HomeIcon size={18} color={selectedVenue === 'Home' ? '#000000' : 'var(--text-primary)'} />
+          <span>Home Workouts</span>
+        </button>
+
+        <button
+          onClick={() => setSelectedVenue('Gym')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            padding: '12px 16px',
+            borderRadius: 'var(--radius-full)',
+            background: selectedVenue === 'Gym' ? 'var(--accent-lime)' : 'transparent',
+            color: selectedVenue === 'Gym' ? '#000000' : 'var(--text-primary)',
+            fontWeight: selectedVenue === 'Gym' ? 900 : 700,
+            fontSize: '0.92rem',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: selectedVenue === 'Gym' ? '0 4px 14px rgba(198, 255, 0, 0.35)' : 'none'
+          }}
+        >
+          <Dumbbell size={18} color={selectedVenue === 'Gym' ? '#000000' : 'var(--text-primary)'} />
+          <span>Gym Workouts</span>
+        </button>
+      </div>
+
       {/* Search Input Bar */}
       <div style={{
         position: 'relative',
@@ -71,7 +131,7 @@ export default function VideoExercises() {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search exercise, target muscle, or equipment..."
+          placeholder={`Search ${selectedVenue.toLowerCase()} exercises, muscle, equipment...`}
           style={{
             background: 'none',
             border: 'none',
@@ -94,7 +154,7 @@ export default function VideoExercises() {
       {/* 1. Primary Muscle Category Selector */}
       <div>
         <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-secondary)', marginBottom: '8px', letterSpacing: '0.5px' }}>
-          MUSCLE GROUP CATEGORIES
+          MUSCLE GROUP CATEGORIES ({selectedVenue.toUpperCase()})
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
           {categories.map(cat => {
@@ -185,7 +245,7 @@ export default function VideoExercises() {
                 }}>
                   <span style={{ fontSize: '1rem' }}>{sec.icon}</span>
                   <h3 style={{ fontSize: '1.05rem', fontWeight: 900, color: 'var(--text-primary)' }}>
-                    {sec.level} {selectedCategory} Exercises
+                    {selectedVenue} {sec.level} {selectedCategory}
                   </h3>
                   <span style={{
                     fontSize: '0.7rem',
@@ -275,7 +335,7 @@ export default function VideoExercises() {
                             border: '1px solid rgba(198, 255, 0, 0.4)',
                             backdropFilter: 'blur(4px)'
                           }}>
-                            {exercise.category}
+                            {exercise.category} • {exercise.venue}
                           </span>
 
                           <span style={{
@@ -330,7 +390,7 @@ export default function VideoExercises() {
             <Dumbbell size={36} color="var(--text-muted)" style={{ margin: '0 auto 10px auto', opacity: 0.5 }} />
             <h4 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '4px' }}>No Exercises Found</h4>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-              No exercises match the selected filters. Try clearing your search or switching difficulty level.
+              No {selectedVenue.toLowerCase()} exercises match the selected category/difficulty. Try clearing your search or switching filters.
             </p>
           </div>
         )}
@@ -406,7 +466,7 @@ export default function VideoExercises() {
             {/* Modal Content Details */}
             <div style={{ padding: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                <span className="badge badge-lime">{activeModalExercise.category}</span>
+                <span className="badge badge-lime">{activeModalExercise.category} • {activeModalExercise.venue}</span>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>• {activeModalExercise.difficulty}</span>
               </div>
 
